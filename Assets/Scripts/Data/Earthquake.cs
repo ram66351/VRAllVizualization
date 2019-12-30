@@ -9,6 +9,7 @@ public class Earthquake : Data
     public float mag;
     public string magType;
     public string place;
+    public string id;
 
     public Earthquake(float _lat, float _lon, DateTime _time, float _mag, string _magType, GameObject _prefab, GameObject _label)
     {
@@ -28,5 +29,6 @@ public class Earthquake : Data
         Instance3D.name = "Earthquake_" + index;
         //Instance3D.GetComponent<EarthquakeDataPoint>().Init(this, label);
         callback();
+        Instance3D.GetComponent<EarthquakeInstance>().Init(this);
     }
 }

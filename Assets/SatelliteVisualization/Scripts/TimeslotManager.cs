@@ -8,10 +8,13 @@ public class TimeslotManager : MonoBehaviour
     public float angle;
     private bool isInitialized = false;
     // Start is called before the first frame update
-    public void Init(int number)
+    string monthName;
+    
+    public void Init(int number, string name)
     {
         isInitialized = true;
-        textMesh.text = number + "";
+        monthName = name;
+        textMesh.text = monthName;
     }
 
     // Update is called once per frame
@@ -28,8 +31,6 @@ public class TimeslotManager : MonoBehaviour
             Color col = textMesh.color;
             col.a = AppUtils.Remap(angle, 0, 180, 0, 1) - (180-angle)/100.0f;
             textMesh.color = col;
-
-           
         }
     }
 }

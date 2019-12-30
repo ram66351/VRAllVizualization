@@ -8,10 +8,7 @@ public class DataLabel : MonoBehaviour
     private string info;
     public Transform from;
     private LineRenderer lr;
-    public SpriteRenderer spriteRenderer;
-    public Text Speed;
-    public Text Pressure;
-    public Text Description;
+    public Text Info;
     Storm storm;
     StormColorCodeCategory stormCat;
     // Start is called before the first frame update
@@ -22,14 +19,10 @@ public class DataLabel : MonoBehaviour
         
     }
 
-    public void SetInfo(Storm _storm, StormColorCodeCategory _stormCat)
+    public void SetInfo(string info, Transform from)
     {
-        storm = _storm;
-        stormCat = _stormCat;
-        Speed.text = "Speed : "+ storm.wind + " KMPH";
-        Pressure.text = "Pressure : " + storm.pressure;
-        Description.text = _stormCat.Description;
-        spriteRenderer.sprite = _stormCat.sprite;
+        Info.text = info;
+        this.from = from;
     }
 
     // Update is called once per frame
@@ -37,9 +30,9 @@ public class DataLabel : MonoBehaviour
     {
         if(from)
         {
-            lr.SetPosition(0, transform.position);
-            lr.SetPosition(1, from.position);
-        }
-        
+            //lr.SetPosition(0, transform.position);
+            //lr.SetPosition(1, from.position);
+            transform.position = from.position * 1.2f;
+        }       
     }
 }

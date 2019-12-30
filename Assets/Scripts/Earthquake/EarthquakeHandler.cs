@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-
+using UnityEngine.UI;
 public class EarthquakeHandler : MonoBehaviour
 {
+    
     public TextAsset earthquakeData;
     public string[,] earthquakeGrid;
     public bool isDataReceived = false;
@@ -13,17 +14,30 @@ public class EarthquakeHandler : MonoBehaviour
     public GameObject prefab;
     public GameObject label;
     public Transform earthquakeParent;
-    public SortedDictionary<int, Earthquake> earthquakeDict = new SortedDictionary<int, Earthquake>();
+    public SortedDictionary<string, Earthquake> earthquakeDict = new SortedDictionary<string, Earthquake>();
     // Start is called before the first frame update
+
+        [SerializeField]
+    public ParticleSystem.Particle[] earthquakeParticle;
+    public ParticleSystem quakePS;
+    public bool bPointsUpdated = false;
+
+    public bool ShowData = true;
+    public Sprite ShowIcon;
+    public Sprite HideIcon;
+    public Button Btn_ShowOrHideData;
+
     void Start()
     {
+        Btn_ShowOrHideData.GetComponent<Image>().sprite = ShowIcon;
+        Btn_ShowOrHideData.onClick.AddListener(ShowOrHideVizualization);
         CSVLoader.CSVLoaderThread(earthquakeData.text, ReceiveData);
     }
 
     void ReceiveData(string[,] data)
     {
-        earthquakeGrid = data;
         Debug.Log("Received Data ! ");
+        earthquakeGrid = data;
         isDataReceived = true;
     }
 
@@ -31,59 +45,73 @@ public class EarthquakeHandler : MonoBehaviour
     {
         if (isDataReceived)
         {
-            PopulateData();
-           
+            PopulateData(earthquakeGrid);
+            isDataReceived = false;
         }
     }
 
-    void PopulateData()
+    void PopulateData(string[,] grid)
     {
-        row = earthquakeGrid.GetUpperBound(0);
-        col = earthquakeGrid.GetUpperBound(1);
+        row = grid.GetUpperBound(0);
+        col = grid.GetUpperBound(1);
 
-        //earthquakeParent = new GameObject();
-        //earthquakeParent.transform.position = transform.position;
-        //earthquakeParent.AddComponent<MeshRenderer>();
-        //earthquakeParent.AddComponent<MeshFilter>();
-        //earthquakeParent.transform.parent = transform;
-
-        for (int i = 1; i < col; i++)
+        for (int i = 1; i < col; i+=2)
         {
             float lat;
             float lon;
             float mag;
             string magType;
+            float depth;
 
-            if (!float.TryParse(earthquakeGrid[1, i], out lat))
+            if (!float.TryParse(grid[1, i], out lat))
             {
 
-                Debug.Log("Latit,ude Invalid ! at postiton [" + 1 + "," + i + "], the value is : " + lat);
+                Debug.Log("Latitude Invalid ! at postiton [" + 1 + "," + i + "], the value is : " + lat);
                 continue;
             }
 
-            if (!float.TryParse(earthquakeGrid[2, i], out lon))
+            if (!float.TryParse(grid[2, i], out lon))
             {
                 Debug.Log("Latitude Invalid ! at postiton [" + 2 + "," + i + "]");
                 continue;
             }
 
-            if (!float.TryParse(earthquakeGrid[4, i], out mag))
+            if (!float.TryParse(grid[4, i], out mag))
             {
                 Debug.Log("Magnitude Invalid ! at postiton [" + 4 + "," + i + "]");
                 continue;
             }
 
-            DateTime dt = DateTime.Now;
-            if (!DateTime.TryParse(earthquakeGrid[0, i], out dt))
+            if (!float.TryParse(grid[3, i], out depth))
             {
-                Debug.Log("Wrong Date Format : " + earthquakeGrid[0, i]);
+                Debug.Log("Magnitude Invalid ! at postiton [" + 3 + "," + i + "]");
+                continue;
+            }
+
+            DateTime dt = DateTime.Now;
+            if (!DateTime.TryParse(grid[0, i], out dt))
+            {
+                Debug.Log("Wrong Date Format : " + grid[0, i]);
             }
 
             //float _lat, float _lon, DateTime _time, float _mag, string _magType, GameObject _prefab, GameObject _label)
-            Earthquake quake = new Earthquake(lat, lon, dt, mag, earthquakeGrid[5, i], prefab, label);
-            quake.CreateMyInstance(i, ()=> { quake.Instance3D.transform.SetParent(transform, false); });
 
-            earthquakeDict.Add(i, quake);
+            double timestamp = dt.Subtract(ModeBasedUI.baseDate).TotalSeconds;
+            Earthquake quake = new Earthquake(lat, lon, dt, mag, grid[5, i], prefab, label);
+            quake.CreateMyInstance(i, ()=> { quake.Instance3D.transform.SetParent(earthquakeParent, false); });
+            quake.depth = depth;
+            quake.id = grid[11, i];
+            if (!earthquakeDict.ContainsKey(quake.id))
+                earthquakeDict.Add(quake.id, quake);
+            else
+            {
+                Debug.Log("Key already existing : " + quake.id);
+            }
+
+            //Vector3 dataPos = AppUtils.LatLonToPositionOnSphere(lat, lon, transform.localScale.x /2);
+            //earthquakeParticle[i].position = dataPos;
+
+            //epos[i] = dataPos;
             //Vector3 dataPos = AppUtils.LatLonToPositionOnSphere(lat, lon, transform.localScale.x/2.0f);
             //GameObject DataPoint = Instantiate(prefab, dataPos, Quaternion.identity, earthquakeParent) as GameObject;
 
@@ -94,15 +122,23 @@ public class EarthquakeHandler : MonoBehaviour
             //float constScale = DataPoint.transform.localScale.x;
         }
 
-        isDataReceived = false;
+        bPointsUpdated = true;
 
-       //StartCoroutine(CombineMesh(earthquakeParent.transform));
-
+        TimelineManager.Instance.BroadcastEvent();
+        //PointCloud.Instance.SetPoints(epos);
+        //TestParticle.Instance.SetParticlePos(epos);
+        //StartCoroutine(CombineMesh(earthquakeParent.transform));
 
     }
+   
     // Update is called once per frame
     void Update()
     {
+        //if(bPointsUpdated)
+        //{
+        //    quakePS.SetParticles(earthquakeParticle, earthquakeParticle.Length);
+        //    quakePS.Emit(earthquakeParticle.Length);  
+        //}
         
     }
 
@@ -124,6 +160,27 @@ public class EarthquakeHandler : MonoBehaviour
         parent.transform.GetComponent<MeshFilter>().mesh = new Mesh();
         parent.transform.GetComponent<MeshFilter>().mesh.CombineMeshes(combine);
         parent.transform.gameObject.SetActive(true);
+
+        //parent.transform.localScale = new Ve
         yield return null;
+    }
+
+    public void ShowOrHideVizualization()
+    {
+        ShowData = !ShowData;
+        if(ShowData)
+        {
+            Btn_ShowOrHideData.GetComponent<Image>().sprite = ShowIcon;
+        }
+        else
+        {
+            Btn_ShowOrHideData.GetComponent<Image>().sprite = HideIcon;
+        }
+
+        foreach (KeyValuePair<string, Earthquake> entry in earthquakeDict)
+        {
+            entry.Value.Instance3D.SetActive(ShowData);
+        }
+
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 public class ModeBasedUI : MonoBehaviour
 {
     public static ModeBasedUI Instance;
@@ -12,7 +13,7 @@ public class ModeBasedUI : MonoBehaviour
 
     public Mode currentMode;
     public Button btn_ZoomOut;
-
+    public static DateTime baseDate = new DateTime(1970, 01, 01);
     // Start is called before the first frame update
     void Awake()
     {
@@ -50,6 +51,6 @@ public class ModeBasedUI : MonoBehaviour
         Debug.Log("Zoom out pressed");
         ChangeMode(Mode.general);
         InputManager.Instance.ZoomOut();
-        DataPoints.applyArrowTextureEvent(false);
+        //DataPoints.applyArrowTextureEvent(false);
     }
 }

@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Threading;
+
 using System;
 
 public class StormDataHandler : MonoBehaviour
@@ -21,9 +23,12 @@ public class StormDataHandler : MonoBehaviour
     private bool isDataReceived = false;
     public SortedDictionary<string, List<Storm>> StormDictionary = new SortedDictionary<string, List<Storm>>();
 
-
-
     public static StormDataHandler Instance;
+
+    public bool ShowData = true;
+    public Sprite ShowIcon;
+    public Sprite HideIcon;
+    public Button Btn_ShowOrHideData;
 
     void Awake()
     {
@@ -33,6 +38,8 @@ public class StormDataHandler : MonoBehaviour
 
     void Start()
     {
+        Btn_ShowOrHideData.GetComponent<Image>().sprite = ShowIcon;
+        Btn_ShowOrHideData.onClick.AddListener(ShowOrHideVizualization);
         Radius = Globe.transform.localScale.x/2;
         CSVLoader.CSVLoaderThread(StormData.text, ReceiveData);
     }
@@ -49,7 +56,7 @@ public class StormDataHandler : MonoBehaviour
         row = StormGrid.GetUpperBound(0);
         col = StormGrid.GetUpperBound(1);
 
-        for (int i = 1; i < col; i++)
+        for (int i = 1; i < col; i+=2)
         {
             float lat, lon = 0;
             if (!float.TryParse(StormGrid[8, i], out lat))
@@ -173,7 +180,7 @@ public class StormDataHandler : MonoBehaviour
                 }
                 else
                 {
-                    prevStormPt.GetComponent<StromDataPoint>().FaceNextPoint(myStormList[j].Instance3D.transform);
+                    prevStormPt.GetComponent<StormInstance>().FaceNextPoint(myStormList[j].Instance3D.transform);
                     prevStormPt = myStormList[j].Instance3D;
                 }
             }
@@ -199,5 +206,28 @@ public class StormDataHandler : MonoBehaviour
         {
             PopulateData();
         }
+    }
+
+    public void ShowOrHideVizualization()
+    {
+        ShowData = !ShowData;
+        if (ShowData)
+        {
+            Btn_ShowOrHideData.GetComponent<Image>().sprite = ShowIcon;
+        }
+        else
+        {
+            Btn_ShowOrHideData.GetComponent<Image>().sprite = HideIcon;
+        }
+
+        foreach (KeyValuePair<string, List<Storm>> entry in StormDictionary)
+        {
+            entry.Value[0].Instance3D.transform.parent.gameObject.SetActive(ShowData);
+            //for (int j = 0; j < entry.Value.Count; j++)
+            //{
+            //    entry.Value[j].Instance3D.SetActive(ShowData);
+            //}
+        }
+
     }
 }

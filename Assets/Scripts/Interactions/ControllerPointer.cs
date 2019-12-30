@@ -82,13 +82,20 @@ public class ControllerPointer : MonoBehaviour
             //if hitting data
             if (HitObject.layer == 8)
             {
-                DataPoints dp = HitObject.GetComponent<DataPoints>();
-                if(InputManager.Instance.GetKey(InputManager.ControllerInput.btn_tigger))
+                //DataPoints dp = HitObject.GetComponent<DataPoints>();
+                //if(InputManager.Instance.GetKey(InputManager.ControllerInput.btn_tigger))
+                //{
+                //    dp.FocusOnData2();
+                //}
+                ////dp.ShowLabel();
+                //dp.OnPointerStay();
+
+                DataInstance3D instance3D = HitObject.GetComponent<DataInstance3D>();
+                instance3D.OnPointerEnter();
+                if (InputManager.Instance.GetKey(InputManager.ControllerInput.btn_tigger))
                 {
-                    dp.FocusOnData2();
+                    instance3D.OnMouseDownSimulated();
                 }
-                //dp.ShowLabel();
-                dp.OnPointerStay();
             }
 
             if (HitObject.layer == 9)
@@ -110,9 +117,9 @@ public class ControllerPointer : MonoBehaviour
 
             if(PreviousHitObject != HitObject)
             {
-                if(PreviousHitObject.GetComponent<DataPoints>())
+                if(PreviousHitObject.GetComponent<DataInstance3D>())
                 {
-                    PreviousHitObject.GetComponent<DataPoints>().OnPointerExit();
+                    PreviousHitObject.GetComponent<DataInstance3D>().OnPointerExit();
                 }               
                 PreviousHitObject = HitObject;
             }

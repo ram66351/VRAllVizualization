@@ -11,7 +11,7 @@ public class FaceCamera : MonoBehaviour
     }
 
     //Orient the camera after all movement is completed this frame to avoid jittering
-    void LateUpdate()
+    void Update()
     {
         transform.LookAt(transform.position + m_Camera.transform.rotation * Vector3.forward,
             m_Camera.transform.rotation * Vector3.up);

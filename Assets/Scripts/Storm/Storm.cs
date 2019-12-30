@@ -38,7 +38,8 @@ public class Storm : Data
     {
         base.CreateMyInstance(index, callback);
         Instance3D.name = name + "_" + index;
-        Instance3D.GetComponent<StromDataPoint>().Init(this, label);
+        //Instance3D.GetComponent<StromDataPoint>().Init(this, label);
+        Instance3D.GetComponent<StormInstance>().Init(this);
         callback();
     }
 }

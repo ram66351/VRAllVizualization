@@ -87,7 +87,7 @@ Transform:
   m_GameObject: {fileID: 3163677652016663670}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.005, y: 0.005, z: 0.005}
+  m_LocalScale: {x: 0.0014588999, y: 0.0014588999, z: 0.0014588999}
   m_Children: []
   m_Father: {fileID: 7016392763038904737}
   m_RootOrder: 0
@@ -151,4 +151,4 @@ TextMesh:
   m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
   m_Color:
     serializedVersion: 2
-    rgba: 4294967295
+    rgba: 4278190335

@@ -52,6 +52,9 @@ public class CSVLoader
 
         // finds the max width of row
         int width = 0;
+
+        Debug.Log(lines.Length);
+
         for (int i = 0; i < lines.Length; i++)
         {
             string[] row = SplitCsvLine(lines[i]);

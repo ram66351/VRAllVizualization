@@ -85,7 +85,7 @@ public class DataPoints : MonoBehaviour
         //Vector3 pos = transform.position + (Camera.main.transform.position - transform.position) / 2;
         //Label.transform.position = new Vector3(pos.x,  -pos.y, pos.z); //transform.position * 1.5f;
         Label.SetActive(true);
-        Label.GetComponent<DataLabel>().SetInfo(storm, stromCategory);
+        //Label.GetComponent<DataLabel>().SetInfo(storm, stromCategory);
         Label.GetComponent<DataLabel>().from = transform;
        // Label.transform.LookAt(Camera.main.transform);
         //Label.transform.localScale = new Vector3(distance, distance, distance)/factor;
@@ -289,6 +289,7 @@ public class DataPoints : MonoBehaviour
             isHighlighted = false;
         StartCoroutine(ApplyDefaultColor());
     }
+
 
     void DataSelected()
     {
