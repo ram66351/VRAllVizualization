@@ -46,11 +46,6 @@ public class StormInstance : DataInstance3D
         TimelineManager.CheckIfMyTimeStampEvent -= ShowOrHideLineRenderer;
     }
     
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     void ShowOrHideLineRenderer()
     {

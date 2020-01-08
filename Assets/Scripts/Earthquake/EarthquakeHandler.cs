@@ -55,7 +55,7 @@ public class EarthquakeHandler : MonoBehaviour
         row = grid.GetUpperBound(0);
         col = grid.GetUpperBound(1);
 
-        for (int i = 1; i < col; i+=2)
+        for (int i = 1; i < col; i++)
         {
             float lat;
             float lon;
@@ -131,16 +131,6 @@ public class EarthquakeHandler : MonoBehaviour
 
     }
    
-    // Update is called once per frame
-    void Update()
-    {
-        //if(bPointsUpdated)
-        //{
-        //    quakePS.SetParticles(earthquakeParticle, earthquakeParticle.Length);
-        //    quakePS.Emit(earthquakeParticle.Length);  
-        //}
-        
-    }
 
     IEnumerator CombineMesh(Transform parent)
     {

@@ -65,11 +65,7 @@ public class DataInstance3D : MonoBehaviour
         TimelineManager.CheckIfMyTimeStampEvent -= ShowOrHideBasedOnTimeStamp;
     }
 
-    // Update is called once per frame
-    void LateUpdate()
-    {
-       
-    }
+
 
     public void ShowOrHideBasedOnTimeStamp()
     {

@@ -73,15 +73,6 @@ public class EarthquakeInstance : DataInstance3D
                                 "\nType : " + this.data.magType +
                                 "\nDepth : " + this.data.depth +
                                 "\nPlace : " + this.data.place;
-
-      
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     public override void OnPointerEnter()
